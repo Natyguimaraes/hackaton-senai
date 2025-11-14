@@ -6,7 +6,6 @@
 -- Criar banco de dados
 CREATE DATABASE IF NOT EXISTS suport_senai;
 USE suport_senai;
-
 -- Tabela de Setores
 CREATE TABLE IF NOT EXISTS setores (
   id_setor INT AUTO_INCREMENT PRIMARY KEY,
