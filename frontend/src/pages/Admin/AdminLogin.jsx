@@ -22,13 +22,17 @@ function AdminLogin() {
 
   return (
     <div className="admin-login-container">
-      <div className="login-card">
-        <div className="login-header">
+      <div className="admin-banner">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80" alt="Banner Admin" className="banner-img" />
+      </div>
+      <div className="admin-header">
+        <div className="header-box">
           <div className="login-icon">🔐</div>
           <h2>Login Administrador</h2>
           <p>Acesso restrito à equipe autorizada</p>
         </div>
-
+      </div>
+      <div className="login-card">
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>
@@ -60,10 +64,13 @@ function AdminLogin() {
         </form>
 
         <div className="back-to-home">
-          <button onClick={() => navigate('/')}>
+          <button onClick={() => navigate('/')}> 
             ← Voltar para Home
           </button>
         </div>
+      </div>
+      <div className="admin-footer">
+        <p>© 2025 SENAI - Todos os direitos reservados</p>
       </div>
     </div>
   );
