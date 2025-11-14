@@ -4,15 +4,15 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'santosnath433@gmail.com',
-    pass: 'oqeqtbfdlpeyyoky',
+    user: 'suportesenaihackaton@gmail.com',
+    pass: 'hmfctosuayrcsnhp',
   },
 });
 
 // Função para enviar e-mail
 export async function sendEmail(to, subject, text, html) {
   const mailOptions = {
-    from: 'Sistema SENAI <santosnath433@gmail.com>',
+    from: 'Sistema SENAI <suportesenaihackaton@gmail.com>',
     to,
     subject,
     text,

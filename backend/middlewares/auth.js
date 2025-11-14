@@ -5,7 +5,7 @@ dotenv.config();
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ 
@@ -16,7 +16,7 @@ export const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Adicionar informações do usuário à requisição
+    req.user = decoded; 
     next();
   } catch (error) {
     return res.status(403).json({ 
