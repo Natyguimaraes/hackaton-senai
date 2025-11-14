@@ -63,3 +63,8 @@ INSERT INTO movimentacoes
 (2, 2, 'Aberta', 'Em andamento', 'Equipe de manutenção direcionada. Previsão de conclusão: 2 dias.');
 
 -- Fim do script de população
+
+#adicionado mais essas duas tabelas de email
+ALTER TABLE solicitacoes ADD COLUMN email_solicitante VARCHAR(150) AFTER nome_solicitante;
+
+ALTER TABLE setores ADD COLUMN email_setor VARCHAR(255);

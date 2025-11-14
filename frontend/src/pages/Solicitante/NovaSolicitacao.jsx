@@ -8,14 +8,15 @@ function NovaSolicitacao() {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [formData, setFormData] = useState({
-    nome_solicitante: '',
-    matricula_solicitante: '',
-    cargo_solicitante: '',
-    local_problema: '',
-    descricao_problema: '',
-    id_categoria: '',
-    prioridade: 'Média',
-    imagem: null
+     nome_solicitante: '',
+     email_solicitante: '',
+     matricula_solicitante: '',
+     cargo_solicitante: '',
+     local_problema: '',
+     descricao_problema: '',
+     id_categoria: '',
+     prioridade: 'Média',
+     imagem: null
   });
 
   useEffect(() => {
@@ -80,6 +81,11 @@ function NovaSolicitacao() {
                 <label>Nome Completo *</label>
                 <input type="text" name="nome_solicitante" value={formData.nome_solicitante} onChange={handleChange} required />
               </div>
+
+                <div className="form-group">
+                  <label>E-mail *</label>
+                  <input type="email" name="email_solicitante" value={formData.email_solicitante} onChange={handleChange} required />
+                </div>
 
               <div className="form-group">
                 <label>Matrícula *</label>

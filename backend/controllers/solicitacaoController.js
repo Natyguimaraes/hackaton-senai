@@ -1,4 +1,5 @@
 import db from '../config/database.js';
+import { sendEmail } from '../utils/emailService.js';
 
 // Criar nova solicitação
 export const criarSolicitacao = async (req, res) => {
@@ -10,12 +11,13 @@ export const criarSolicitacao = async (req, res) => {
       local_problema,
       descricao_problema,
       id_categoria,
-      prioridade
+      prioridade,
+      email_solicitante // NOVO CAMPO
     } = req.body;
 
     // Validações
     if (!nome_solicitante || !matricula_solicitante || !cargo_solicitante || 
-        !local_problema || !descricao_problema || !id_categoria || !prioridade) {
+        !local_problema || !descricao_problema || !id_categoria || !prioridade || !email_solicitante) {
       return res.status(400).json({
         success: false,
         message: 'Todos os campos obrigatórios devem ser preenchidos.'
@@ -28,12 +30,28 @@ export const criarSolicitacao = async (req, res) => {
     // Inserir solicitação
     const [result] = await db.query(
       `INSERT INTO solicitacoes 
-       (id_categoria_fk, nome_solicitante, matricula_solicitante, cargo_solicitante,
+       (id_categoria_fk, nome_solicitante, email_solicitante, matricula_solicitante, cargo_solicitante,
         local_problema, descricao_problema, prioridade, path_imagem, status_solicitacao)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Aberta')`,
-      [id_categoria, nome_solicitante, matricula_solicitante, cargo_solicitante,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Aberta')`,
+      [id_categoria, nome_solicitante, email_solicitante, matricula_solicitante, cargo_solicitante,
        local_problema, descricao_problema, prioridade, path_imagem]
     );
+
+    // Buscar e-mail do setor responsável
+    const [setor] = await db.query(
+      `SELECT st.email_setor FROM categorias_solicitacao c
+       INNER JOIN setores st ON c.id_setor_fk = st.id_setor
+       WHERE c.id_categoria = ?`,
+      [id_categoria]
+    );
+    if (setor.length > 0 && setor[0].email_setor) {
+      await sendEmail(
+        setor[0].email_setor,
+        'Nova solicitação criada',
+        `Uma nova solicitação foi registrada por ${nome_solicitante}.`,
+        `<b>Uma nova solicitação foi registrada por ${nome_solicitante}.</b>`
+      );
+    }
 
     res.status(201).json({
       success: true,
@@ -153,7 +171,6 @@ export const buscarPorId = async (req, res) => {
 // Atualizar status da solicitação
 export const atualizarStatus = async (req, res) => {
   const connection = await db.getConnection();
-  
   try {
     const { id } = req.params;
     const { status_solicitacao, resposta_setor } = req.body;
@@ -194,6 +211,22 @@ export const atualizarStatus = async (req, res) => {
     );
 
     await connection.commit();
+
+    // Se status for concluída, enviar e-mail para o solicitante
+    if (status_solicitacao === 'Concluída') {
+      const [solicitacao] = await connection.query(
+        'SELECT email_solicitante FROM solicitacoes WHERE id_solicitacao = ?',
+        [id]
+      );
+      if (solicitacao.length > 0 && solicitacao[0].email_solicitante) {
+        await sendEmail(
+          solicitacao[0].email_solicitante,
+          'Sua solicitação foi concluída',
+          'Sua solicitação foi finalizada com sucesso pelo setor responsável.',
+          `<b>Sua solicitação foi finalizada com sucesso pelo setor responsável.</b>`
+        );
+      }
+    }
 
     res.json({
       success: true,
