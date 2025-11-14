@@ -1,0 +1,77 @@
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--success-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.export-button:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.export-button.disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.export-button.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: #6c757d;
+}
+
+.export-button.loading {
+  background: #ffc107;
+  cursor: wait;
+}
+
+.export-button.loading:hover {
+  transform: none;
+  background: #ffc107;
+}
+
+.export-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.export-text {
+  font-weight: 500;
+}
+
+/* Animação de loading */
+.export-button.loading .export-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Versão compacta para mobile */
+@media (max-width: 768px) {
+  .export-button {
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 120px;
+  }
+  
+  .export-icon {
+    font-size: 14px;
+  }
+}

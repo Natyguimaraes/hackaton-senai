@@ -62,10 +62,10 @@ const startServer = async () => {
     // Testar conexão com o banco de dados
     await testConnection();
     
-    app.listen(PORT, () => {
-      console.log(`\n✅ Servidor rodando na porta ${PORT}`);
-      console.log(`📍 URL: http://localhost:${PORT}`);
-      console.log(`📚 Ambiente: ${process.env.NODE_ENV || 'development'}\n`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+      console.log(`Local: http://localhost:${PORT}`);
+      console.log(`Network: http://192.168.0.108:${PORT}`);
     });
   } catch (error) {
     console.error('❌ Erro ao iniciar servidor:', error);

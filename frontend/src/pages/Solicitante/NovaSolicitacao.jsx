@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
+import './NovaSolicitacao.css';
 
 function NovaSolicitacao() {
   const navigate = useNavigate();
@@ -61,70 +62,92 @@ function NovaSolicitacao() {
   };
 
   return (
-    <div className="solicitante-container">
-      <div className="container">
+    <div className="nova-solicitacao-container">
+      <div className="nova-solicitacao-content">
         <button className="btn btn-outline" onClick={() => navigate('/solicitante')}>
           ← Voltar
         </button>
         
-        <div className="card" style={{ marginTop: '20px', maxWidth: '800px', margin: '20px auto' }}>
-          <h2 style={{ marginBottom: '30px', color: 'var(--secondary-color)' }}>Nova Solicitação</h2>
-          
+        <div className="form-header">
+          <h1>Nova Solicitação</h1>
+          <p>Preencha os dados abaixo para registrar sua solicitação</p>
+        </div>
+        
+        <div className="form-card">
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Nome Completo *</label>
-              <input type="text" name="nome_solicitante" value={formData.nome_solicitante} onChange={handleChange} required />
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Nome Completo *</label>
+                <input type="text" name="nome_solicitante" value={formData.nome_solicitante} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>Matrícula *</label>
+                <input type="text" name="matricula_solicitante" value={formData.matricula_solicitante} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>Cargo *</label>
+                <input type="text" name="cargo_solicitante" value={formData.cargo_solicitante} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>Local do Problema *</label>
+                <input type="text" name="local_problema" value={formData.local_problema} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>Categoria *</label>
+                <select name="id_categoria" value={formData.id_categoria} onChange={handleChange} required>
+                  <option value="">Selecione...</option>
+                  {categorias.map(cat => (
+                    <option key={cat.id_categoria} value={cat.id_categoria}>
+                      {cat.nome_categoria} - {cat.nome_setor}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Prioridade *</label>
+                <select name="prioridade" value={formData.prioridade} onChange={handleChange} required>
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média">Média</option>
+                  <option value="Urgente">Urgente</option>
+                </select>
+              </div>
+
+              <div className="form-group form-group-full">
+                <label>Descrição do Problema *</label>
+                <textarea name="descricao_problema" value={formData.descricao_problema} onChange={handleChange} rows="5" required />
+              </div>
+
+              <div className="form-group form-group-full">
+                <label>Imagem (opcional)</label>
+                <div className="file-upload-area">
+                  <div className="upload-icon">📎</div>
+                  <div className="upload-text">Arraste uma imagem aqui ou clique para selecionar</div>
+                  <label className="btn-upload">
+                    Escolher Arquivo
+                    <input type="file" className="file-input" accept="image/*" onChange={handleFileChange} />
+                  </label>
+                  {formData.imagem && (
+                    <div className="file-preview">
+                      📄 {formData.imagem.name}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label>Matrícula *</label>
-              <input type="text" name="matricula_solicitante" value={formData.matricula_solicitante} onChange={handleChange} required />
+            <div className="form-actions">
+              <button type="button" className="btn btn-outline" onClick={() => navigate('/solicitante')}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Enviar Solicitação
+              </button>
             </div>
-
-            <div className="form-group">
-              <label>Cargo *</label>
-              <input type="text" name="cargo_solicitante" value={formData.cargo_solicitante} onChange={handleChange} required />
-            </div>
-
-            <div className="form-group">
-              <label>Local do Problema *</label>
-              <input type="text" name="local_problema" value={formData.local_problema} onChange={handleChange} required />
-            </div>
-
-            <div className="form-group">
-              <label>Categoria *</label>
-              <select name="id_categoria" value={formData.id_categoria} onChange={handleChange} required>
-                <option value="">Selecione...</option>
-                {categorias.map(cat => (
-                  <option key={cat.id_categoria} value={cat.id_categoria}>
-                    {cat.nome_categoria} - {cat.nome_setor}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Prioridade *</label>
-              <select name="prioridade" value={formData.prioridade} onChange={handleChange} required>
-                <option value="Baixa">Baixa</option>
-                <option value="Média">Média</option>
-                <option value="Urgente">Urgente</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Descrição do Problema *</label>
-              <textarea name="descricao_problema" value={formData.descricao_problema} onChange={handleChange} rows="5" required />
-            </div>
-
-            <div className="form-group">
-              <label>Imagem (opcional)</label>
-              <input type="file" accept="image/*" onChange={handleFileChange} />
-            </div>
-
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-              Enviar Solicitação
-            </button>
           </form>
         </div>
       </div>

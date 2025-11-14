@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api, { getServerURL } from '../../services/api';
 import { toast } from 'react-toastify';
+import './AcompanharSolicitacoes.css';
+import './AcompanharSolicitacoes.css';
+import ExportButton from '../../components/ExportButton';
 
 function AcompanharSolicitacoes() {
   const navigate = useNavigate();
@@ -77,7 +80,15 @@ function AcompanharSolicitacoes() {
 
           {solicitacoes.length > 0 && (
             <div>
-              <h3 style={{ marginBottom: '20px' }}>Suas Solicitações</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3>Suas Solicitações</h3>
+                <ExportButton 
+                  type="solicitacoes"
+                  data={solicitacoes}
+                  filters={{ matricula }}
+                  disabled={false}
+                />
+              </div>
               {solicitacoes.map(sol => (
                 <div key={sol.id_solicitacao} className="card" style={{ marginBottom: '15px', padding: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '10px' }}>
@@ -106,7 +117,7 @@ function AcompanharSolicitacoes() {
                       <strong>Imagem anexada:</strong>
                       <div style={{ marginTop: '5px' }}>
                         <img 
-                          src={`http://localhost:3001${sol.path_imagem}`}
+                          src={`${getServerURL()}${sol.path_imagem}`}
                           alt="Imagem da solicitação"
                           style={{ 
                             maxWidth: '100%', 
@@ -116,7 +127,7 @@ function AcompanharSolicitacoes() {
                             border: '1px solid var(--border-color)',
                             cursor: 'pointer'
                           }}
-                          onClick={() => window.open(`http://localhost:3001${sol.path_imagem}`, '_blank')}
+                          onClick={() => window.open(`${getServerURL()}${sol.path_imagem}`, '_blank')}
                         />
                       </div>
                     </div>

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import api from '../../services/api';
+import api, { getServerURL } from '../../services/api';
 import { toast } from 'react-toastify';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
+import ExportButton from '../../components/ExportButton';
 import './AdminDashboard.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -244,58 +245,83 @@ function AdminDashboard() {
               onChange={(e) => setFiltros(prev => ({ ...prev, data_fim: e.target.value }))}
             />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <button className="btn btn-primary" onClick={aplicarFiltros}>
               Aplicar Filtros
             </button>
             <button className="btn btn-outline" onClick={limparFiltros}>
               Limpar Filtros
             </button>
+            <ExportButton 
+              type="solicitacoes"
+              data={solicitacoes}
+              filters={filtros}
+              disabled={solicitacoes.length === 0}
+            />
+            <ExportButton 
+              type="categorias"
+              categorias={categorias}
+              solicitacoesPorCategoria={solicitacoes.reduce((acc, sol) => {
+                if (!acc[sol.id_categoria_fk]) acc[sol.id_categoria_fk] = [];
+                acc[sol.id_categoria_fk].push(sol);
+                return acc;
+              }, {})}
+              disabled={categorias.length === 0}
+            />
           </div>
         </div>
 
         {/* Tabela de Solicitações */}
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Solicitante</th>
-                <th>Categoria</th>
-                <th>Local</th>
-                <th>Prioridade</th>
-                <th>Status</th>
-                <th>Data</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {solicitacoes.map(sol => (
-                <tr key={sol.id_solicitacao}>
-                  <td>{sol.id_solicitacao}</td>
-                  <td>{sol.nome_solicitante}</td>
-                  <td>{sol.nome_categoria}</td>
-                  <td>{sol.local_problema}</td>
-                  <td>
-                    <span className={`badge ${getPrioridadeBadge(sol.prioridade)}`}>
-                      {sol.prioridade}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge ${getStatusBadge(sol.status_solicitacao)}`}>
-                      {sol.status_solicitacao}
-                    </span>
-                  </td>
-                  <td>{new Date(sol.data_criacao).toLocaleDateString('pt-BR')}</td>
-                  <td className="table-actions">
-                    <button className="btn btn-primary" onClick={() => abrirModal(sol)}>
-                      Atualizar
-                    </button>
-                  </td>
+        <div className="table-responsive">
+          <div className="table-container">
+            <table className="solicitacoes-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Solicitante</th>
+                  <th className="hide-mobile">Categoria</th>
+                  <th className="hide-mobile">Local</th>
+                  <th>Prioridade</th>
+                  <th>Status</th>
+                  <th className="hide-mobile">Data</th>
+                  <th>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {solicitacoes.map(sol => (
+                  <tr key={sol.id_solicitacao}>
+                    <td>{sol.id_solicitacao}</td>
+                    <td>
+                      <div>
+                        <strong>{sol.nome_solicitante}</strong>
+                        <div className="mobile-info">
+                          <small className="show-mobile">{sol.nome_categoria} • {sol.local_problema}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="hide-mobile">{sol.nome_categoria}</td>
+                    <td className="hide-mobile">{sol.local_problema}</td>
+                    <td>
+                      <span className={`badge ${getPrioridadeBadge(sol.prioridade)}`}>
+                        {sol.prioridade}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge ${getStatusBadge(sol.status_solicitacao)}`}>
+                        {sol.status_solicitacao}
+                      </span>
+                    </td>
+                    <td className="hide-mobile">{new Date(sol.data_criacao).toLocaleDateString('pt-BR')}</td>
+                    <td className="table-actions">
+                      <button className="btn btn-primary" onClick={() => abrirModal(sol)}>
+                        Atualizar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -324,7 +350,7 @@ function AdminDashboard() {
                   <label>Imagem anexada</label>
                   <div style={{ marginTop: '5px' }}>
                     <img 
-                      src={`http://localhost:3001${solicitacaoSelecionada.path_imagem}`}
+                      src={`${getServerURL()}${solicitacaoSelecionada.path_imagem}`}
                       alt="Imagem da solicitação"
                       style={{ 
                         maxWidth: '100%', 

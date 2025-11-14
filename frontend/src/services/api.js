@@ -1,7 +1,31 @@
 import axios from 'axios';
 
+// Detectar automaticamente o host baseado na URL atual
+const getBaseURL = () => {
+  const hostname = window.location.hostname;
+  
+  // Se estiver acessando via IP da rede local, usar o mesmo IP para o backend
+  if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    return `http://${hostname}:3001/api`;
+  }
+  
+  // Caso contrário, usar localhost
+  return 'http://localhost:3001/api';
+};
+
+// Função para gerar URL completa do servidor (para imagens)
+export const getServerURL = () => {
+  const hostname = window.location.hostname;
+  
+  if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    return `http://${hostname}:3001`;
+  }
+  
+  return 'http://localhost:3001';
+};
+
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json'
   }
